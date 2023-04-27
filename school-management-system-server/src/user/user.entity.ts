@@ -31,4 +31,8 @@ export class User {
     nullable: true,
   })
   associatedId: string;
+
+  constructor(partial: Partial<User>) {
+    Object.assign(this, partial);
+  }
 }

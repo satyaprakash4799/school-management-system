@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
@@ -11,6 +12,7 @@ import { GetUserDto } from './dto/get-user-dto';
 import { CreateUserDto } from './dto/create-user-dto';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user-dto';
+import { ValidateUserDto } from './dto/validate-user-dto';
 
 @Injectable()
 export class UserService {
@@ -30,6 +32,7 @@ export class UserService {
     if (!user) {
       throw new NotFoundException();
     }
+    delete user.password;
     return user;
   }
 
@@ -83,10 +86,9 @@ export class UserService {
       .update(User)
       .set({ ...queryPayload })
       .where('username = :username', { username: 'testuser' })
-      .returning('*');
+      .returning(['id', 'username', 'role', 'associatedId']);
     const result = await query.execute();
     const user = result.raw[0];
-    delete user['password'];
     return user;
   }
 
@@ -95,5 +97,18 @@ export class UserService {
     console.log(user);
     // return user;
     // delete user
+  }
+
+  async validateUser(validateUserDto: ValidateUserDto) {
+    const { username, password } = validateUserDto;
+    const user = await this.userRepository.findOne({
+      where: { username },
+    });
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+      return user;
+    } else {
+      throw new UnauthorizedException('Please check your login crdedentails');
+    }
   }
 }
