@@ -55,48 +55,56 @@ export class UserService {
     }
   }
 
-  async updateUser(updateUserDto: UpdateUserDto) {
-    const {
-      username: updateUserName,
-      password,
-      associatedId,
-      role,
-    } = updateUserDto;
-    const queryPayload = {};
+  async updateUser(getUserDto: GetUserDto, updateUserDto: UpdateUserDto) {
+    try {
+      const { username } = getUserDto;
+      const {
+        username: updateUserName,
+        password,
+        associatedId,
+        role,
+      } = updateUserDto;
+      const queryPayload = {};
 
-    if (updateUserName) {
-      queryPayload['username'] = updateUserName;
-    }
+      if (updateUserName) {
+        queryPayload['username'] = updateUserName;
+      }
 
-    if (password) {
-      const salt = await bcrypt.genSalt();
-      const hashedPassword = await bcrypt.hash(password, salt);
-      queryPayload['password'] = hashedPassword;
-    }
+      if (password) {
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(password, salt);
+        queryPayload['password'] = hashedPassword;
+      }
 
-    if (associatedId) {
-      queryPayload['associatedId'] = associatedId;
-    }
+      if (associatedId) {
+        queryPayload['associatedId'] = associatedId;
+      }
 
-    if (role) {
-      queryPayload['role'] = role;
+      if (role) {
+        queryPayload['role'] = role;
+      }
+      const query = this.userRepository
+        .createQueryBuilder('user')
+        .update(User)
+        .set({ ...queryPayload })
+        .where('username = :username', { username: username })
+        .returning(['id', 'username', 'role', 'associatedId']);
+      const result = await query.execute();
+      const user = result.raw[0];
+      return user;
+    } catch (error) {
+      if (error?.code === '23505') {
+        throw new ConflictException('Username already exists');
+      }
+      throw new InternalServerErrorException();
     }
-    const query = this.userRepository
-      .createQueryBuilder('user')
-      .update(User)
-      .set({ ...queryPayload })
-      .where('username = :username', { username: 'testuser' })
-      .returning(['id', 'username', 'role', 'associatedId']);
-    const result = await query.execute();
-    const user = result.raw[0];
-    return user;
   }
 
   async deleteUser(getUserDto: GetUserDto) {
     const user = await this.getUser(getUserDto);
-    console.log(user);
-    // return user;
-    // delete user
+    await this.userRepository.delete({
+      username: user.username,
+    });
   }
 
   async validateUser(validateUserDto: ValidateUserDto) {
