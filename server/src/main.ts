@@ -9,7 +9,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptor());
   const configService = app.get(ConfigService);
-  const port = configService.get('port');
+  const port = configService.get('PORT');
   await app.listen(port);
 }
 bootstrap();

@@ -17,7 +17,7 @@ export class Student {
   lastName: string;
 
   @Column({
-    type: Date,
+    type: 'date',
   })
   dateOfBirth: Date;
 
@@ -55,15 +55,16 @@ export class Student {
   @Column({
     length: 6,
   })
-  zipCode: string;
+  pincode: string;
 
   @Column({
-    type: Date,
+    type: 'date',
   })
   admissionDate: Date;
 
   @Column({
-    type: Date,
+    type: 'date',
+    nullable: true,
   })
   exitDate: Date;
 }

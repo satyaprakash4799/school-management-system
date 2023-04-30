@@ -28,7 +28,7 @@ export class AuthController {
     return await this.authService.signIn(createUserDto);
   }
 
-  @Get('user')
+  @Get('me')
   async getUser(@GetUser() user: User) {
     return await user;
   }

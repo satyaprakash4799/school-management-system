@@ -17,7 +17,7 @@ import { JwtAuthGuard } from './auth/jwt-auth-guard';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: [`.env.${process.env.STAGE}`],
+      envFilePath: `.env.${process.env.NODE_ENV}`,
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
@@ -36,15 +36,15 @@ import { JwtAuthGuard } from './auth/jwt-auth-guard';
       inject: [ConfigService],
     }),
     UserModule,
-    GradeModule,
-    AssignmentModule,
-    AttendanceModule,
-    ClassModule,
-    TeacherModule,
-    EnrollmentModule,
-    CourseModule,
+    // GradeModule,
+    // AssignmentModule,
+    // AttendanceModule,
+    // ClassModule,
+    // TeacherModule,
+    // EnrollmentModule,
+    // CourseModule,
     StudentModule,
-    GradeModule,
+    // GradeModule,
     AuthModule,
   ],
   controllers: [],
