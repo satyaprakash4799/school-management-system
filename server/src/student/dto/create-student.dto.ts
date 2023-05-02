@@ -1,5 +1,4 @@
 import {
-  IS_LENGTH,
   IsDateString,
   IsEmail,
   IsEnum,
@@ -8,8 +7,13 @@ import {
   Length,
   MaxLength,
   MinLength,
+  Validate,
 } from 'class-validator';
 import { Gender } from '../student-gender.enum';
+import {
+  StudentExitDateValidator,
+  StudentMinimumAgeValidator,
+} from '../date.validator';
 
 export class CreateStudentDto {
   @IsNotEmpty({
@@ -43,6 +47,7 @@ export class CreateStudentDto {
       message: 'Date of birth field should be in ISO string format',
     },
   )
+  @Validate(StudentMinimumAgeValidator)
   dateOfBirth: Date;
 
   @IsNotEmpty({
@@ -134,5 +139,6 @@ export class CreateStudentDto {
       message: 'Exit date must be of be ISO string format',
     },
   )
+  @Validate(StudentExitDateValidator)
   exitDate: Date;
 }

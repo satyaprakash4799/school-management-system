@@ -14,6 +14,7 @@ import { AuthModule } from './auth/auth.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth-guard';
+import { RolesGuard } from './common/guards/roles.guard';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -52,6 +53,10 @@ import { JwtAuthGuard } from './auth/jwt-auth-guard';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })

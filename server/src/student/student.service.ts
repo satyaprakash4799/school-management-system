@@ -20,7 +20,7 @@ export class StudentService {
     private userRepository: Repository<User>,
   ) {}
 
-  async getStudent(user: User) {
+  async getStudent(user: User): Promise<Student | NotFoundException> {
     const student = await this.getRelateStudent(user);
 
     if (!student) {
@@ -37,7 +37,11 @@ export class StudentService {
 
     return await getStudentQuery.getOne();
   }
-  async createStudent(user: User, createStudentDto: CreateStudentDto) {
+
+  async createStudent(
+    user: User,
+    createStudentDto: CreateStudentDto,
+  ): Promise<Student | ConflictException> {
     const student = await this.getRelateStudent(user);
     if (student) {
       throw new ConflictException('Student already exists');
@@ -76,7 +80,10 @@ export class StudentService {
     return createdStudent;
   }
 
-  async updateStudent(user: User, updateStudentDto: UpdateStudentDto) {
+  async updateStudent(
+    user: User,
+    updateStudentDto: UpdateStudentDto,
+  ): Promise<Student | NotFoundException> {
     const student = await this.getRelateStudent(user);
     if (!student) {
       throw new NotFoundException('No associated student found to update');
@@ -112,7 +119,7 @@ export class StudentService {
     return updatedStudentQuery.raw[0];
   }
 
-  async deleteStudent(user: User): Promise<void> {
+  async deleteStudent(user: User): Promise<void | NotFoundException> {
     const student = await this.getRelateStudent(user);
     if (student) {
       await this.studentRepository.delete({

@@ -28,9 +28,9 @@ export class AuthController {
     return await this.authService.signIn(createUserDto);
   }
 
-  @Get('me')
-  async getUser(@GetUser() user: User) {
-    return await user;
+  @Get('profile')
+  async getUser(@GetUser() user: User): Promise<User> {
+    return user;
   }
   @HttpCode(200)
   @Post('refresh-token')
