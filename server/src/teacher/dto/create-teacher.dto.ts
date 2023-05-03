@@ -1,21 +1,18 @@
 import {
   IsDateString,
   IsEmail,
-  IsEnum,
   IsNotEmpty,
   IsOptional,
-  Length,
   MaxLength,
   MinLength,
   Validate,
 } from 'class-validator';
-import { Gender } from '../student-gender.enum';
 import {
-  StudentExitDateValidator,
-  StudentMinimumAgeValidator,
+  TeacherAgeValidator,
+  TeacherExitDateValidator,
 } from '../date.validator';
 
-export class CreateStudentDto {
+export class CreateTeacherDto {
   @IsNotEmpty({
     message: 'First name is required field',
   })
@@ -38,6 +35,12 @@ export class CreateStudentDto {
   })
   lastName: string;
 
+  @IsNotEmpty({
+    message: 'Email is a required field',
+  })
+  @IsEmail()
+  email: string;
+
   @IsNotEmpty({ message: 'Date of the birth is required field' })
   @IsDateString(
     {
@@ -47,20 +50,8 @@ export class CreateStudentDto {
       message: 'Date of birth field should be in ISO string format',
     },
   )
-  @Validate(StudentMinimumAgeValidator)
+  @Validate(TeacherAgeValidator)
   dateOfBirth: Date;
-
-  @IsNotEmpty({
-    message: 'Gender is a required field',
-  })
-  @IsEnum(Gender)
-  gender: string;
-
-  @IsNotEmpty({
-    message: 'Email is a required field',
-  })
-  @IsEmail()
-  email: string;
 
   @IsNotEmpty({
     message: 'Phone number is a required field',
@@ -107,26 +98,21 @@ export class CreateStudentDto {
   state: string;
 
   @IsNotEmpty({
-    message: 'Pincode is a required field',
-  })
-  @Length(6, 6, {
-    message: 'Pincode should be of only 6 characters',
-  })
-  pincode: string;
-
-  @IsNotEmpty({
-    message: 'Admission date is a required field',
+    message: 'Joining date is a required field',
   })
   @IsDateString(
     {
       strict: true,
     },
     {
-      message: 'Admission date must be of be ISO string format',
+      message: 'Joining date must be of be ISO string format',
     },
   )
-  @Validate(StudentMinimumAgeValidator)
-  admissionDate: Date;
+  @Validate(TeacherAgeValidator, {
+    message:
+      'Teacher age must be in the range of 18 to 65 at the time of joining',
+  })
+  joiningDate: Date;
 
   @IsOptional()
   @IsNotEmpty({
@@ -140,6 +126,6 @@ export class CreateStudentDto {
       message: 'Exit date must be of be ISO string format',
     },
   )
-  @Validate(StudentExitDateValidator)
+  @Validate(TeacherExitDateValidator)
   exitDate: Date;
 }

@@ -1,9 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
-import { Gender } from './student-gender.enum';
-import { User } from '../user/user.entity';
+import { User } from 'src/user/user.entity';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Student {
+export class Teacher {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -18,20 +17,14 @@ export class Student {
   lastName: string;
 
   @Column({
-    type: 'date',
-  })
-  dateOfBirth: Date;
-
-  @Column({
-    length: 10,
-    enum: Gender,
-  })
-  gender: Gender;
-
-  @Column({
     length: 30,
   })
   email: string;
+
+  @Column({
+    type: 'date',
+  })
+  dateOfBirth: Date;
 
   @Column({
     length: 12,
@@ -61,7 +54,7 @@ export class Student {
   @Column({
     type: 'date',
   })
-  admissionDate: Date;
+  joiningDate: Date;
 
   @Column({
     type: 'date',
@@ -69,6 +62,6 @@ export class Student {
   })
   exitDate: Date;
 
-  @OneToOne(() => User, (user) => user.studentId)
+  @OneToOne(() => User, (user) => user.teacherId)
   user: User;
 }

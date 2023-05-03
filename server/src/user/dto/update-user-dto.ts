@@ -21,6 +21,10 @@ export class UpdateUserDto {
   role: ROLES;
 
   @IsOptional()
-  @IsUUID('all', { message: 'Invalid associate id' })
-  associatedId: string;
+  @IsUUID('all', { message: 'Invalid student id' })
+  studentId: string;
+
+  @IsOptional()
+  @IsUUID('all', { message: 'Invalid teacher id' })
+  teacherId: string;
 }

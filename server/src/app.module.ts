@@ -41,7 +41,7 @@ import { RolesGuard } from './common/guards/roles.guard';
     // AssignmentModule,
     // AttendanceModule,
     // ClassModule,
-    // TeacherModule,
+    TeacherModule,
     // EnrollmentModule,
     // CourseModule,
     StudentModule,

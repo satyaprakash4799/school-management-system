@@ -8,6 +8,7 @@ import {
 import { Exclude } from 'class-transformer';
 import { ROLES } from './user-role-enum';
 import { Student } from 'src/student/student.entity';
+import { Teacher } from 'src/teacher/teacher.entity';
 
 @Entity('user')
 export class User {
@@ -37,7 +38,7 @@ export class User {
     type: 'uuid',
     nullable: true,
   })
-  associatedId: string;
+  studentId: string;
 
   @OneToOne(() => Student, {
     eager: false,
@@ -45,9 +46,29 @@ export class User {
     onDelete: 'SET NULL',
   })
   @JoinColumn({
-    name: 'associatedId',
+    name: 'studentId',
+    referencedColumnName: 'id',
+    foreignKeyConstraintName: 'studentId',
   })
   student: Student;
+
+  @Column({
+    type: 'uuid',
+    nullable: true,
+  })
+  teacherId: string;
+
+  @OneToOne(() => Teacher, {
+    eager: false,
+    cascade: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({
+    name: 'teacherId',
+    referencedColumnName: 'id',
+    foreignKeyConstraintName: 'teacherId',
+  })
+  teacher: Teacher;
 
   constructor(partial: Partial<User>) {
     Object.assign(this, partial);

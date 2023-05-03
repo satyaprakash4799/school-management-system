@@ -61,7 +61,8 @@ export class UserService {
       const {
         username: updateUserName,
         password,
-        associatedId,
+        studentId,
+        teacherId,
         role,
       } = updateUserDto;
       const queryPayload = {};
@@ -76,9 +77,12 @@ export class UserService {
         queryPayload['password'] = hashedPassword;
       }
 
-      if (associatedId) {
-        queryPayload['associatedId'] = associatedId;
-      }
+      // if (studentId) {
+      //   queryPayload['studentId'] = studentId;
+      // }
+      // if (teacherId) {
+      //   queryPayload['teacherId'] = teacherId;
+      // }
 
       if (role) {
         queryPayload['role'] = role;
@@ -88,7 +92,7 @@ export class UserService {
         .update(User)
         .set({ ...queryPayload })
         .where('username = :username', { username: username })
-        .returning(['id', 'username', 'role', 'associatedId']);
+        .returning(['id', 'username', 'role', 'studentId', 'teacherId']);
       const result = await query.execute();
       const user = result.raw[0];
       return user;

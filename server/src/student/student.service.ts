@@ -21,7 +21,7 @@ export class StudentService {
   ) {}
 
   async getStudent(user: User): Promise<Student | NotFoundException> {
-    const student = await this.getRelateStudent(user);
+    const student = await this.getRelatedStudent(user);
 
     if (!student) {
       throw new NotFoundException('No associated student found');
@@ -29,10 +29,10 @@ export class StudentService {
     return student;
   }
 
-  async getRelateStudent(user: User): Promise<Student> {
+  async getRelatedStudent(user: User): Promise<Student> {
     const getStudentQuery = this.studentRepository
       .createQueryBuilder('student')
-      .leftJoinAndSelect('user', 'user', 'user.associatedId = student.id')
+      .leftJoinAndSelect('user', 'user', 'user.studentId = student.id')
       .where('user.username= :username', { username: user.username });
 
     return await getStudentQuery.getOne();
@@ -42,7 +42,7 @@ export class StudentService {
     user: User,
     createStudentDto: CreateStudentDto,
   ): Promise<Student | ConflictException> {
-    const student = await this.getRelateStudent(user);
+    const student = await this.getRelatedStudent(user);
     if (student) {
       throw new ConflictException('Student already exists');
     }
@@ -73,7 +73,7 @@ export class StudentService {
     const updateUserQuery = this.userRepository
       .createQueryBuilder('user')
       .update()
-      .set({ associatedId: createdStudent.id })
+      .set({ studentId: createdStudent.id })
       .returning('*')
       .execute();
     await updateUserQuery;
@@ -84,7 +84,7 @@ export class StudentService {
     user: User,
     updateStudentDto: UpdateStudentDto,
   ): Promise<Student | NotFoundException> {
-    const student = await this.getRelateStudent(user);
+    const student = await this.getRelatedStudent(user);
     if (!student) {
       throw new NotFoundException('No associated student found to update');
     }
@@ -120,13 +120,13 @@ export class StudentService {
   }
 
   async deleteStudent(user: User): Promise<void | NotFoundException> {
-    const student = await this.getRelateStudent(user);
+    const student = await this.getRelatedStudent(user);
     if (student) {
       await this.studentRepository.delete({
         id: student.id,
       });
     } else {
-      throw new NotFoundException('No associated student found');
+      throw new NotFoundException('No related student found');
     }
   }
 }
